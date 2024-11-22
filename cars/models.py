@@ -16,7 +16,7 @@ class Car(models.Model):
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cars')
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='registration')
 
     def __str__(self):
         return f"{self.make} {self.model} ({self.year})"
