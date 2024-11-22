@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Главная{% endblock %}
+{% block content %}
+<h2>Все автомобили</h2>
+
+<div class="row">
+    {% for car in cars %}
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ car.make }} {{ car.model }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">{{ car.year }}</h6>
+                <p><strong>Владелец:</strong> {{ car.owner.get_full_name|default:"Аноним" }}</p>
+                <p class="card-text">{{ car.description }}</p>
+                <a href="?pk={{ car.id }}" class="btn btn-primary">Подробнее</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% if selected_car %}
+<div class="mt-5">
+    <h3>Информация о {{ selected_car.make }} {{ selected_car.model }}</h3>
+    <p><strong>Год:</strong> {{ selected_car.year }}</p>
+    <p><strong>Описание:</strong> {{ selected_car.description }}</p>
+
+    <h4>Комментарии:</h4>
+    <ul>
+        {% for comment in comments %}
+        <li>{{ comment.content }} <em>({{ comment.author.get_full_name|default:'Аноним' }})</em></li>
+        {% endfor %}
+    </ul>
+    {% if user.is_authenticated %}
+    <h5>Добавить комментарий:</h5>
+    <form method="post">
+        {% csrf_token %}
+        {{ comment_form.as_p }}
+        <button type="submit" class="btn btn-primary">Отправить</button>
+    </form>
+    {% else %}
+    <p><a href="{% url 'login' %}">Войдите</a>, чтобы оставить комментарий.</p>
+    {% endif %}
+
+</div>
+{% endif %}
+{% endblock %}
