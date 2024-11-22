@@ -38,8 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'cars'
+    'cars',
+    'user_interface',
 ]
+LOGIN_REDIRECT_URL = '/profile'  # Редирект после логина
+LOGOUT_REDIRECT_URL = '/'        # Редирект после выхода
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
