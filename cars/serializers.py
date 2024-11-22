@@ -19,13 +19,31 @@ class CarSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_owner(obj):
-        return obj.owner.username
+        first_name = obj.owner.first_name
+        last_name = obj.owner.last_name
+        if first_name and last_name:
+            return f"{first_name} {last_name[0]}."
+        elif first_name:
+            return f"{first_name[0]}."
+        else:
+            return "Аноним"
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    author = serializers.SerializerMethodField()
+
     class Meta:
         model = Comment
-        fields = ['id', 'content', 'created_at']
+        fields = ['id', 'content', 'author', 'created_at']
+        read_only_fields = ['author', 'created_at', 'car']
 
-    def create(self, validated_data):
-        return Comment.objects.create(**validated_data)
+    @staticmethod
+    def get_author(obj):
+        first_name = obj.author.first_name
+        last_name = obj.author.last_name
+        if first_name and last_name:
+            return f"{first_name} {last_name[0]}."
+        elif first_name:
+            return f"{first_name[0]}."
+        else:
+            return "Аноним"
