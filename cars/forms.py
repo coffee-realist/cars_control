@@ -3,6 +3,9 @@ from .models import Car, Comment
 
 
 class CarForm(forms.ModelForm):
+    """
+    Форма для управления моделью Car (создание и редактирование).
+    """
     class Meta:
         model = Car
         fields = ['make', 'model', 'year', 'description']
@@ -15,6 +18,9 @@ class CarForm(forms.ModelForm):
 
 
 class CommentForm(forms.ModelForm):
+    """
+    Форма для добавления комментариев к машине.
+    """
     class Meta:
         model = Comment
         fields = ['content']

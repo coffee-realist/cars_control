@@ -3,15 +3,18 @@
 {% block content %}
 <h2>Все автомобили</h2>
 
+<!-- Список всех автомобилей -->
 <div class="row">
     {% for car in cars %}
     <div class="col-md-4 mb-4">
         <div class="card">
             <div class="card-body">
+                <!-- Информация о машине -->
                 <h5 class="card-title">{{ car.make }} {{ car.model }}</h5>
                 <h6 class="card-subtitle mb-2 text-muted">{{ car.year }}</h6>
                 <p><strong>Владелец:</strong> {{ car.owner.get_full_name|default:"Аноним" }}</p>
                 <p class="card-text">{{ car.description }}</p>
+                <!-- Кнопка "Подробнее" -->
                 <a href="?pk={{ car.id }}" class="btn btn-primary">Подробнее</a>
             </div>
         </div>
@@ -19,6 +22,7 @@
     {% endfor %}
 </div>
 
+<!-- Информация о выбранной машине -->
 {% if selected_car %}
 <div class="mt-5">
     <h3>Информация о {{ selected_car.make }} {{ selected_car.model }}</h3>
@@ -32,6 +36,7 @@
         {% endfor %}
     </ul>
     {% if user.is_authenticated %}
+    <!-- Форма добавления комментария -->
     <h5>Добавить комментарий:</h5>
     <form method="post">
         {% csrf_token %}
@@ -41,7 +46,6 @@
     {% else %}
     <p><a href="{% url 'login' %}">Войдите</a>, чтобы оставить комментарий.</p>
     {% endif %}
-
 </div>
 {% endif %}
 {% endblock %}

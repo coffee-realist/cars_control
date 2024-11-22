@@ -3,11 +3,25 @@ from django.contrib.auth.models import User
 
 
 class RegistrationForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
-    password_confirm = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}),
-                                       label="Подтверждение пароля")
+    """
+    Форма для регистрации пользователей.
+    Добавляет поля для подтверждения пароля и настройки их атрибутов.
+    """
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        label="Пароль"
+    )
+    password_confirm = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        label="Подтверждение пароля"
+    )
 
     class Meta:
+        """
+        Метаданные формы:
+        - Связана с моделью User.
+        - Использует стандартные поля, включая username, email и пароль.
+        """
         model = User
         fields = ['username', 'first_name', 'last_name', 'email', 'password']
         widgets = {
@@ -18,6 +32,9 @@ class RegistrationForm(forms.ModelForm):
         }
 
     def clean(self):
+        """
+        Проверяет совпадение паролей. Если пароли не совпадают, добавляется ошибка.
+        """
         cleaned_data = super().clean()
         password = cleaned_data.get("password")
         password_confirm = cleaned_data.get("password_confirm")
@@ -27,6 +44,9 @@ class RegistrationForm(forms.ModelForm):
         return cleaned_data
 
     def save(self, commit=True):
+        """
+        Сохраняет пользователя, устанавливая хэшированный пароль.
+        """
         user = super().save(commit=False)
         user.set_password(self.cleaned_data['password'])
         if commit:

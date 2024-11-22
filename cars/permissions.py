@@ -7,9 +7,12 @@ class IsOwnerOrReadOnly(BasePermission):
     """
 
     def has_object_permission(self, request, view, obj):
-        # Все пользователи могут читать данные (GET, HEAD, OPTIONS)
+        """
+        Проверяет права доступа к объекту:
+        - Все пользователи могут читать данные (GET, HEAD, OPTIONS).
+        - Только владелец может редактировать или удалять запись.
+        """
         if request.method in ['GET', 'HEAD', 'OPTIONS']:
             return True
 
-        # Только владелец может редактировать или удалять запись
         return obj.owner == request.user

@@ -4,6 +4,7 @@
 {% block content %}
 <h2>Мои автомобили</h2>
 
+<!-- Таблица с машинами пользователя -->
 <table class="table">
     <thead>
         <tr>
@@ -22,7 +23,9 @@
             <td>{{ car.year }}</td>
             <td>{{ car.description }}</td>
             <td>
+                <!-- Кнопка редактирования -->
                 <a href="{% url 'edit-car' car.id %}" class="btn btn-sm btn-warning">Редактировать</a>
+                <!-- Кнопка удаления -->
                 <form method="post" action="{% url 'car-delete' car.id %}" style="display:inline;">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-sm btn-danger">Удалить</button>
@@ -33,12 +36,14 @@
     </tbody>
 </table>
 
+<!-- Форма добавления или редактирования машины -->
 <h3>{{ editing_car|default:"Добавить новый автомобиль" }}</h3>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit" class="btn btn-primary">{{ "Сохранить"|default:"Добавить" }}</button>
     {% if editing_car %}
+    <!-- Кнопка отмены редактирования -->
     <a href="{% url 'profile' %}" class="btn btn-secondary">Отмена</a>
     {% endif %}
 </form>

@@ -4,13 +4,19 @@ from django.contrib.auth.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор для отображения данных о пользователе.
+    """
     class Meta:
         model = User
         fields = ['username']
 
 
 class CarSerializer(serializers.ModelSerializer):
-    owner = serializers.SerializerMethodField()
+    """
+    Сериализатор для модели Car.
+    """
+    owner = serializers.SerializerMethodField()  # Преобразование поля owner в строковое представление
 
     class Meta:
         model = Car
@@ -19,6 +25,9 @@ class CarSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_owner(obj):
+        """
+        Возвращает имя владельца или 'Аноним', если данные отсутствуют.
+        """
         first_name = obj.owner.first_name
         last_name = obj.owner.last_name
         if first_name and last_name:
@@ -30,7 +39,10 @@ class CarSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    author = serializers.SerializerMethodField()
+    """
+    Сериализатор для модели Comment.
+    """
+    author = serializers.SerializerMethodField()  # Преобразование поля author в строковое представление
 
     class Meta:
         model = Comment
@@ -39,6 +51,9 @@ class CommentSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_author(obj):
+        """
+        Возвращает имя автора или 'Аноним', если данные отсутствуют.
+        """
         first_name = obj.author.first_name
         last_name = obj.author.last_name
         if first_name and last_name:

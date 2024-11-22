@@ -12,6 +12,10 @@ from django.contrib.auth import views as auth_views
 
 
 class CustomLoginView(auth_views.LoginView):
+    """
+    Переопределяет поведение стандартного представления для входа.
+    Перед входом разлогинивает пользователя, если он уже авторизован.
+    """
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             logout(request)  # Разлогиниваем пользователя
@@ -19,23 +23,29 @@ class CustomLoginView(auth_views.LoginView):
 
 
 def home(request):
-    cars = Car.objects.all()
-    selected_car = None
-    comments = None
-    comment_form = CommentForm()
+    """
+    Главная страница, отображающая список всех машин.
+    - GET: показывает список машин.
+    - POST: добавляет комментарий к выбранной машине.
+    """
+    cars = Car.objects.all()  # Получаем все машины
+    selected_car = None  # Выбранная машина
+    comments = None  # Комментарии к выбранной машине
+    comment_form = CommentForm()  # Форма для добавления комментария
 
-    if 'pk' in request.GET:  # Заменяем car_id на pk
-        selected_car = get_object_or_404(Car, id=request.GET['pk'])  # Заменяем car_id на pk
+    if 'pk' in request.GET:  # Проверяем, есть ли выбранная машина
+        selected_car = get_object_or_404(Car, id=request.GET['pk'])
         comments = selected_car.comments.all()
 
     if request.method == 'POST' and selected_car and request.user.is_authenticated:
+        # Обработка добавления нового комментария
         comment_form = CommentForm(request.POST)
         if comment_form.is_valid():
             comment = comment_form.save(commit=False)
             comment.car = selected_car
             comment.author = request.user
             comment.save()
-            return redirect(f'/?pk={selected_car.id}')  # Заменяем car_id на pk
+            return redirect(f'/?pk={selected_car.id}')  # Перенаправление на ту же страницу
 
     return render(request, 'pages/home.html', {
         'cars': cars,
@@ -46,11 +56,19 @@ def home(request):
 
 
 def custom_logout(request):
+    """
+    Логаут и перенаправление на страницу входа.
+    """
     logout(request)
     return redirect(reverse('login'))
 
 
 def register(request):
+    """
+    Регистрация нового пользователя.
+    - GET: отображает форму регистрации.
+    - POST: сохраняет нового пользователя.
+    """
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
@@ -62,16 +80,22 @@ def register(request):
 
 
 @login_required
-def profile(request, pk=None):  # Используем pk вместо car_id
-    user_cars = Car.objects.filter(owner=request.user)
+def profile(request, pk=None):
+    """
+    Профиль пользователя:
+    - Просмотр всех машин, принадлежащих пользователю.
+    - Добавление или редактирование машины.
+    """
+    user_cars = Car.objects.filter(owner=request.user)  # Машины текущего пользователя
     if pk:
-        car = get_object_or_404(Car, id=pk, owner=request.user)  # Заменяем car_id на pk
-        form = CarForm(instance=car)
+        car = get_object_or_404(Car, id=pk, owner=request.user)
+        form = CarForm(instance=car)  # Форма для редактирования машины
     else:
         car = None
-        form = CarForm()
+        form = CarForm()  # Форма для добавления новой машины
 
     if request.method == 'POST':
+        # Обработка добавления или редактирования машины
         if pk:
             form = CarForm(request.POST, instance=car)
         else:
