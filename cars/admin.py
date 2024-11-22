@@ -18,5 +18,6 @@ class CommentAdmin(admin.ModelAdmin):
     ordering = ('-created_at',)
 
     def car_link(self, obj):
-        return admin.utils.format_html('<a href="{}">{}</a>', obj.car.get_absolute_url(), obj.car)
+        return admin.utils.format_html('<a href="{}">{}</a>', obj.car.id, obj.car)
     car_link.short_description = "Car"
+    car_link.admin_order_field = 'car'
