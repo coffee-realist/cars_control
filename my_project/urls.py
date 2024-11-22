@@ -1,12 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
-from django.contrib.auth import views as auth_views
-from cars.views import register
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('cars.urls')),
-    path('register/', register, name='register'),
-    path('login/', auth_views.LoginView.as_view(template_name='cars/login.html'), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('', include('user_interface.urls')),
 ]
